@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/getbasket@1.1.1/dist/basket.min.css" integrity="sha256-diZpcL3ZwrWdOSgIkTd9Lk7xorxHS4mT0I1UEfFi9a0=" crossorigin="anonymous">
+    <title>AmbientSpotify</title>
+</head>
+<body>
+    <style>
+        body{
+            background-color: #111;
+            color: #fff;
+        }
+
+        #signin{
+            text-align: center;
+            align-items: center;
+            margin-top: 40vh;
+        }
+    </style>
+
+    <div id="signin" class="container">
+        <div class="row">
+            <div class="col col-12">
+                <div class="text-center">
+                    <h4>To start...</h4>
+                    <a><button id="signin-btn" onclick="signin()" class="btn btn-blue">Login to Spotify</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/getbasket@1.1.1/dist/basket.min.js" integrity="sha256-komGclTLfPHDdN9BSMYuIajfQfyIHcEteQzTJWkJfKU=" crossorigin="anonymous"></script>
+    <script>
+        var scopes = 'user-read-currently-playing streaming user-read-email user-read-private';
+        var client_id = '3fec398608064020bcb85c43946df70b';
+        var redirectUri = '';
+        var state = 'eYulkO8pUJp9yhew';
+
+        function signin() {
+            window.location.replace('https://accounts.spotify.com/authorize' +
+            '?response_type=token' +
+            '&client_id=' + client_id +
+            '&scope=' + encodeURIComponent(scopes) +
+            '&redirect_uri=' + encodeURIComponent(redirectUri) + 
+            '&state=' + state +
+            '&show_dialog=true');
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/getbasket@1.1.1/dist/basket.min.css" integrity="sha256-diZpcL3ZwrWdOSgIkTd9Lk7xorxHS4mT0I1UEfFi9a0=" crossorigin="anonymous">
+    <title>AmbientSpotify</title>
+</head>
+<body>
+    <style>
+        :root{
+            --main-color: #f0f0f0;
+        }
+
+
+        body{
+            background-color: #121212;
+            color: var(--main-color);
+            overflow: visible;
+            transition: all 1s !important;
+        }   
+
+        .main_view{
+            z-index: 1;
+            position: fixed;
+            bottom: 2vh;
+            left: 1vw;
+            margin: 0vh 0vw;
+            width: 98vw;
+            opacity: 1;
+        }
+
+        #not_playing{
+            z-index: 1;
+            align-items: center;
+            position: fixed;
+            top: 30vh;
+            opacity: 0;
+            margin: 0vh 0vw;
+            width: -webkit-fill-available;
+        }
+
+        .song_text{
+            margin: 0;
+        }
+        .no_margin{
+            margin: 0;
+        }
+
+
+        #time{
+            z-index: 1;
+            position: fixed;
+            top: 1vh;
+            left: 1vw;
+            margin: none;
+        }
+        #player{
+            z-index: 1;
+            position: fixed;
+            top: 1vh;
+            right: 1vw;
+            margin: none;
+        }
+
+        #bg_image{
+            z-index: -1;
+            display: block;
+            filter: blur(5px) opacity(0.4);
+            height: 100vh;
+            -webkit-filter: blur(5px) opacity(0.4); 
+            background-image: none;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            opacity: 0;
+        }
+        #progress{
+            width: 100vw;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+        #progress_bar{
+            height: 1vh;
+            background-color: var(--main-color);
+            width: 0%;
+            border-radius: 0px 5px 5px 0px;
+        }
+
+    </style>
+
+    <div id="bg_image"></div>
+
+    <div id="time">
+        <h1 id="time_text" class="no_margin">Time</h1>
+    </div>
+
+    <div id="player">
+        <h5 id="player_status" class="no_margin">Player Loading</h5>
+    </div>
+
+    <div id="playing" class="playing container main_view">
+        <div class="row">
+            <div class="col">
+                <div class="text-left">
+                    <h1 id="song_name" class="song_text">Song</h1>
+                    <h4 id="artist" class="song_text">Artist</h4>
+                    <p id="progress_time" class="no_margin"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="not_playing" class="hero hero-lg align-items-center text-center">
+        <div class="hero-body">
+            <h3>Nothing is playing</h3>
+            <p>Play something on Spotify to get started!</p>
+        </div>
+    </div>
+
+    <div id="progress" class="playing">
+        <div id="progress_bar"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/getbasket@1.1.1/dist/basket.min.js" integrity="sha256-komGclTLfPHDdN9BSMYuIajfQfyIHcEteQzTJWkJfKU=" crossorigin="anonymous"></script>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script src="vibrant"></script>
+    <script>
+        var raw_token = window.location.hash.substr(1);
+        var start, end = 0;
+        for (i = 0; i < raw_token.length; i++){
+            if (raw_token.charAt(i) == '='){
+                start = i + 1;
+            }
+            if (raw_token.charAt(i) == '&'){
+                end = i;
+                break;
+            }
+        }
+
+        var token = raw_token.substring(start, end);
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'application/json');
+        headers.append('Authorization', ('Bearer ' + token));
+        const conf = {
+            method: 'GET',
+            headers: headers
+        }
+        var get_response;
+        function get_playing() {
+            fetch('https://api.spotify.com/v1/me/player/currently-playing?market=ES&additional_types=episode', conf)
+                .then((response) => {
+                    console.log(response.json().then((data) => {
+                        console.log(data);
+                        get_response = data;
+                        set_screen(get_response);
+                    }))
+                })
+        }
+        var colors;
+        function set_screen(get_response) {
+            if (get_response.is_playing) {
+                document.getElementById('playing').style.opacity = 1;
+                document.getElementById('not_playing').style.opacity = 0;
+                document.getElementById('progress').style.opacity = 1;
+                document.getElementById('bg_image').style.opacity = 1;
+
+                let progress_percent = 100*(get_response.progress_ms / get_response.item.duration_ms);
+                document.getElementById('progress_bar').setAttribute('style', 'width:' + progress_percent + 'vw')
+                let progress_time = ms_to_time(get_response.progress_ms) + '/' + ms_to_time(get_response.item.duration_ms);
+                document.getElementById('progress_time').innerText = progress_time;
+
+                document.getElementById('bg_image').style.backgroundImage = 'url("' + get_response.item.album.images[0].url + '")';
+                
+
+                document.getElementById('song_name').innerText = get_response.item.name;
+                document.getElementById('artist').innerText = get_response.item.artists[0].name;
+
+               
+                Vibrant.from(get_response.item.album.images[0].url).getPalette().then(function(palette) {
+                    colors = palette;
+                    document.documentElement.style.setProperty('--main-color', colors.Vibrant.getHex());
+                });
+                
+
+
+
+
+
+            } else{
+
+                document.documentElement.style.setProperty('--main-color', '#f0f0f0');
+                document.getElementById('not_playing').style.opacity = 1;
+                document.getElementById('playing').style.opacity = 0;
+                document.getElementById('progress').style.opacity = 0;
+                document.getElementById('bg_image').style.opacity = 0;
+            }
+            let currentdate = new Date();
+            var datetime = pad(currentdate.getHours(), 2) + ":" + pad(currentdate.getMinutes(), 2) + ":" + pad(currentdate.getSeconds(), 2);
+            document.getElementById('time_text').innerText = datetime;
+
+        }
+
+        
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            const player = new Spotify.Player({
+              name: 'Ambient Spotify Player',
+              getOAuthToken: cb => { cb(token); }
+            });
+          
+            // Error handling
+            player.addListener('initialization_error', ({ message }) => { console.error(message); });
+            player.addListener('authentication_error', ({ message }) => { console.error(message); });
+            player.addListener('account_error', ({ message }) => { console.error(message); });
+            player.addListener('playback_error', ({ message }) => { console.error(message); });
+          
+            // Playback status updates
+            player.addListener('player_state_changed', state => { console.log(state); });
+          
+            // Ready
+            player.addListener('ready', ({ device_id }) => {
+              console.log('Ready with Device ID', device_id);
+              document.getElementById('player_status').innerText = 'Player Ready';
+            });
+          
+            // Not Ready
+            player.addListener('not_ready', ({ device_id }) => {
+              console.log('Device ID has gone offline', device_id);
+              document.getElementById('player_status').innerText = 'Player Offline';
+            });
+          
+            // Connect to the player!
+            player.connect();
+          };
+          
+
+        
+        function pad(str, max) {
+            str = str.toString();
+            return str.length < max ? pad("0" + str, max) : str;
+        }
+        function ms_to_time(ms) {
+            return ( Math.floor((ms/1000)/60) + ':' + pad(Math.floor(ms/1000)-(Math.floor((ms/1000)/60)*60), 2))
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        async function delayed() {
+            while (true) {
+                get_playing();
+                await sleep(200);
+            }   
+        }
+        delayed()
+    
+    </script>
+    
+</body>
+</html>
