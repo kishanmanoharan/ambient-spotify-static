@@ -125,7 +125,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/getbasket@1.1.1/dist/basket.min.js" integrity="sha256-komGclTLfPHDdN9BSMYuIajfQfyIHcEteQzTJWkJfKU=" crossorigin="anonymous"></script>
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
-    <script src="vibrant"></script>
+    <script src="vibrant.min.js"></script>
     <script>
         var raw_token = window.location.hash.substr(1);
         var start, end = 0;
@@ -184,13 +184,7 @@
                     document.documentElement.style.setProperty('--main-color', colors.Vibrant.getHex());
                 });
                 
-
-
-
-
-
             } else{
-
                 document.documentElement.style.setProperty('--main-color', '#f0f0f0');
                 document.getElementById('not_playing').style.opacity = 1;
                 document.getElementById('playing').style.opacity = 0;
@@ -200,10 +194,8 @@
             let currentdate = new Date();
             var datetime = pad(currentdate.getHours(), 2) + ":" + pad(currentdate.getMinutes(), 2) + ":" + pad(currentdate.getSeconds(), 2);
             document.getElementById('time_text').innerText = datetime;
-
         }
 
-        
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new Spotify.Player({
               name: 'Ambient Spotify Player',
