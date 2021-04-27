@@ -156,8 +156,8 @@
             fetch('https://api.spotify.com/v1/me/player/currently-playing?market=ES&additional_types=episode', conf)
                 .then((response) => {
                     if (response.status != 200){
-                        window.location.replace('index.html');
-                    }
+                        window.location.replace('index.html')
+                    };
                     console.log(response.json().then((data) => {
                         console.log(data);
                         get_response = data;
