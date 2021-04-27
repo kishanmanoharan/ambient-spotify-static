@@ -214,7 +214,7 @@
             // Ready
             player.addListener('ready', ({ device_id }) => {
               console.log('Ready with Device ID', device_id);
-              document.getElementById('player_status').innerText = 'Player Ready';
+              document.getElementById('player_status').innerText = 'Cast to this Tab';
             });
           
             // Not Ready
@@ -226,8 +226,6 @@
             // Connect to the player!
             player.connect();
           };
-          
-
         
         function pad(str, max) {
             str = str.toString();
@@ -249,6 +247,5 @@
         delayed()
     
     </script>
-    
 </body>
 </html>
