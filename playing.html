@@ -168,6 +168,9 @@
                         console.log(data);
                         get_response = data;
                         set_screen(get_response);
+                    }).catch((error) => {
+                        console.error('Error:', error);
+                        document.getElementById('not_playing').style.opacity = 1;
                     }))
                 })
         }
