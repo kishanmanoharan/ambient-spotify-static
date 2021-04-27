@@ -11,25 +11,54 @@
 <body>
     <style>
         body{
-            background-color: #000;
             color: #fff;
         }
 
+        #color_bg{
+            z-index: -1;
+            display: block;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background: #000000;
+            background: -webkit-linear-gradient(top left, #000000, #014CFF);
+            background: -moz-linear-gradient(top left, #000000, #014CFF);
+            background: linear-gradient(to bottom right, #000000, #014CFF);
+            background-size: 400%;
+            transition: all 0.5s ease-in-out !important;
+            animation: rainbow_animation 4s ease-in-out 0s infinite both alternate-reverse;
+        }
+
         #signin{
+            z-index: 1;
+            position: fixed;
+            top: 30vh;
+            margin: 0vh 0vw;
+            width: -webkit-fill-available;
             text-align: center;
             align-items: center;
-            margin-top: 40vh;
+        }
+        #signin-btn{
+            border-width: 0;
+            background: #3E63FF;
+            opacity: 1;
+            transition: all 0.5s ease-in-out !important;
+        }
+        #signin-btn:hover{
+            background: #9301FF;
+        }
+
+        @keyframes rainbow_animation {
+            0%,100% {background-position: 0 0}
+            50% {background-position: 100% 100%}
         }
     </style>
 
-    <div id="signin" class="container">
-        <div class="row">
-            <div class="col col-12">
-                <div class="text-center">
-                    <h4>To start...</h4>
-                    <a><button id="signin-btn" onclick="signin()" class="btn btn-blue">Login to Spotify</button></a>
-                </div>
-            </div>
+    <div id="color_bg"></div>
+    <div id="signin" class="hero hero-lg align-items-center text-center">
+        <div class="hero-body">
+            <h4 style="margin-bottom: 1vh;">To start...</h4>
+            <a><button id="signin-btn" onclick="signin()" class="btn btn-blue">Login to Spotify</button></a>
         </div>
     </div>
 
