@@ -66,6 +66,13 @@
             margin: none;
         }
 
+        #playing_art{
+            opacity: 1;
+            transition: all 0.3s ease-in-out !important;
+            margin: 0px 15px 0px 0px;
+            border-radius: 15px;
+        }
+
         #bg_image{
             z-index: -1;
             display: block;
@@ -110,6 +117,9 @@
 
     <div id="playing" class="playing container main_view">
         <div class="row">
+            <div class="col col-auto" style="flex: none;">
+                <img id="playing_art" src="" width="130px">
+            </div>
             <div class="col">
                 <div class="text-left">
                     <h1 id="song_name" class="song_text text-bold">Song</h1>
@@ -253,9 +263,12 @@
             if (('url("' + path + '")') != document.getElementById('bg_image').style.backgroundImage) {
                 console.log("CHANGE");
                 document.getElementById('bg_image').style.opacity = 0;
+                document.getElementById('playing_art').style.opacity = 0;
                 await sleep(300);
                 document.getElementById('bg_image').style.backgroundImage = 'url("' + path + '")';
+                document.getElementById('playing_art').src = path;
                 document.getElementById('bg_image').style.opacity = 1;
+                document.getElementById('playing_art').style.opacity = 1;
             }
         }
 

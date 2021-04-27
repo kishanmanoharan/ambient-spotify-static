@@ -40,12 +40,17 @@
         }
         #signin-btn{
             border-width: 0;
-            background: #3E63FF;
+            background: #1db954;
             opacity: 1;
-            transition: all 0.5s ease-in-out !important;
+            transition: all 0.3s ease-in-out !important;
+            border-radius: 50px;
+            height: fit-content;
+            padding: 12px 15px 10px 15px;
+            box-shadow: 0px 0px 0px #1db954;
+            
         }
         #signin-btn:hover{
-            background: #9301FF;
+            box-shadow: 0px 0px 20px #1db954;
         }
 
         @keyframes rainbow_animation {
@@ -57,8 +62,8 @@
     <div id="color_bg"></div>
     <div id="signin" class="hero hero-lg align-items-center text-center">
         <div class="hero-body">
-            <h4 style="margin-bottom: 1vh;">To start...</h4>
-            <a><button id="signin-btn" onclick="signin()" class="btn btn-blue">Login to Spotify</button></a>
+            <h4 style="margin-bottom: 1vh;">Login with Spotify</h4>
+            <button id="signin-btn" onclick="signin()" class=""><img src="assets/spotify-white.png" width="150px" alt="Login to Spotify"></button>
         </div>
     </div>
 
