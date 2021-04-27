@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/getbasket@1.1.1/dist/basket.min.css" integrity="sha256-diZpcL3ZwrWdOSgIkTd9Lk7xorxHS4mT0I1UEfFi9a0=" crossorigin="anonymous">
+    <link rel="icon" type="image/svg" href="assets/icon.svg"/>
     <title>AmbientSpotify</title>
 </head>
 <body>
@@ -12,7 +13,6 @@
         :root{
             --main-color: #f0f0f0;
         }
-
 
         body{
             background-color: #121212;
@@ -70,12 +70,15 @@
             filter: blur(5px) opacity(0.4);
             height: 100vh;
             -webkit-filter: blur(5px) opacity(0.4); 
+            transition: background-image 0.3s ease-in-out !important;
+            transition: opacity 0.3s ease-in-out !important;
             background-image: none;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
             opacity: 0;
         }
+
         #progress{
             width: 100vw;
             position: fixed;
@@ -152,6 +155,9 @@
         function get_playing() {
             fetch('https://api.spotify.com/v1/me/player/currently-playing?market=ES&additional_types=episode', conf)
                 .then((response) => {
+                    if (data.status != 200){
+                        window.location.replace('index.html');
+                    }
                     console.log(response.json().then((data) => {
                         console.log(data);
                         get_response = data;
@@ -172,8 +178,7 @@
                 let progress_time = ms_to_time(get_response.progress_ms) + '/' + ms_to_time(get_response.item.duration_ms);
                 document.getElementById('progress_time').innerText = progress_time;
 
-                document.getElementById('bg_image').style.backgroundImage = 'url("' + get_response.item.album.images[0].url + '")';
-                
+                change_img(get_response.item.album.images[0].url);
 
                 document.getElementById('song_name').innerText = get_response.item.name;
                 document.getElementById('artist').innerText = get_response.item.artists[0].name;
@@ -235,16 +240,26 @@
             return ( Math.floor((ms/1000)/60) + ':' + pad(Math.floor(ms/1000)-(Math.floor((ms/1000)/60)*60), 2))
         }
 
+        async function change_img(path) {
+            if (('url("' + path + '")') != document.getElementById('bg_image').style.backgroundImage) {
+                console.log("CHANGE");
+                document.getElementById('bg_image').style.opacity = 0;
+                await sleep(300);
+                document.getElementById('bg_image').style.backgroundImage = 'url("' + path + '")';
+                document.getElementById('bg_image').style.opacity = 1;
+            }
+        }
+
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
-        async function delayed() {
+        async function delayed(time) {
             while (true) {
                 get_playing();
-                await sleep(200);
+                await sleep(time);
             }   
         }
-        delayed()
+        delayed(500);
     
     </script>
 </body>
